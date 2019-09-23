@@ -29,7 +29,8 @@
    - ft for feet."
   [this key member1 member2 unit]
   (let [unit* (or unit (get-in this [:config :redis :unit] "m"))]
-    (carmine/geodist key member1 member2 unit*)))
+    (wcar this
+      (carmine/geodist key member1 member2 unit*))))
 
 (defn- -geopos
   "Return the positions (longitude,latitude) of all the specified members
@@ -53,7 +54,7 @@
      - ft for feet."
   [this key longitude latitude radius unit]
   (wcar this
-    (carmine/georadius key longitude latitude radius unit)))
+    (carmine/georadius key longitude latitude radius unit "WITHCOORD" "WITHDIST" "ASC")))
 
 (defn- -zrem
   "Removes the specified members from the sorted set stored at key.

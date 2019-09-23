@@ -24,13 +24,15 @@
 (defn geopos
   [{:keys [query-params] <redis> :component}]
   (let [{:strs [id]} query-params]
-    (if-let [msg (redis/geopos <redis> "tracking" id)]
-      (response 200 {:position msg})
+    (if-let [[position] (redis/geopos <redis> "tracking" id)]
+      (response 200 {:position position})
       (response 204))))
 
 (defn georadius
   [{:keys [query-params] <redis> :component}]
   (let [{:strs [lat lng radius unit]} query-params]
     (if-let [msg (redis/georadius <redis> "tracking" lng lat radius unit)]
-      (response 200 {:objects msg})
+      (->> (mapv (partial zipmap [:id :distance :position]) msg)
+           (assoc {} :members)
+           (response 200))
       (response 204))))

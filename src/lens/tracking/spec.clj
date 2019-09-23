@@ -17,13 +17,15 @@
                     (s/coll-of double? :kind vector? :count 2)
                     (s/cat :lat ::lat :lng ::lng)))
 
+(s/def ::unit #{"m" "km" "mi" "ft"})
+
 (defn parse-geoadd-params
   [params]
   (s/conform (s/keys :req-un [::position ::id]) params))
 
-#_(s/def ::coord
-    (s/conformer (fn [v]
-                   (try
-                     (Double/parseDouble v)
-                     (catch NumberFormatException _
-                       ::s/invalid)))))
+(s/def ::coordinate
+  (s/conformer (fn [v]
+                 (try
+                   (Double/parseDouble v)
+                   (catch NumberFormatException _
+                     ::s/invalid)))))
