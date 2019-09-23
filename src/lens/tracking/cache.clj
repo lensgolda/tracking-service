@@ -3,12 +3,11 @@
 
 (defprotocol Redis
   (ping [this])
+  (geoadd [this key lat lng member])
+  (geodist [this key member1 member2])
+  (geopos [this key member])
+  (georadius [this key longitude latitude radius unit])
+  (zrem [this key member]))
   ;;(set [this key val])
   ;;(get [this key])
-  ;;(zrem [this key member])
-  ;;(del [this key])
-  (geoadd [this key lat lng member])
-  (geopos [this key member])
-  (geodist [this key member1 member2]))
-  ;;(georadius [this key longitude latitude radius unit]))
   ;;(georadiusbymember [this key member radius unit]))
