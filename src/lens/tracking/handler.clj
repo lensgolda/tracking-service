@@ -14,10 +14,10 @@
         (response 200 {:id id :total msg}))
       (response 400 {:error "invalid params"}))))
 
-(defn distance
+(defn geodistance
   [{:keys [query-params] <redis> :component}]
   (let [{:strs [id1 id2 unit]} query-params]
-    (if-let [msg (redis/geodist <redis> "tracking" id1 id2)]
+    (if-let [msg (redis/geodist <redis> "tracking" id1 id2 unit)]
       (response 200 {:distance msg})
       (response 404))))
 
@@ -25,5 +25,12 @@
   [{:keys [query-params] <redis> :component}]
   (let [{:strs [id]} query-params]
     (if-let [msg (redis/geopos <redis> "tracking" id)]
-      (response 200 {:distance msg})
-      (response 404))))
+      (response 200 {:position msg})
+      (response 204))))
+
+(defn georadius
+  [{:keys [query-params] <redis> :component}]
+  (let [{:strs [lat lng radius unit]} query-params]
+    (if-let [msg (redis/georadius <redis> "tracking" lng lat radius unit)]
+      (response 200 {:objects msg})
+      (response 204))))

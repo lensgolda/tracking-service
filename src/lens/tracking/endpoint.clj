@@ -28,16 +28,21 @@
                           :responses  {200 {:body {:total int? :id string?}}}
                           :interceptors [(i/with-component <redis>)]
                           :handler    handler/geoadd}}]
-       ["/geodist" {:get {:summary    "Return the distance between two members in the geospatial index"
-                          :parameters {:query {:id1 string? :id2 string?}}
-                          :responses  {200 {:body {:distance string?}}}
+       ["/geodist" {:get {:summary      "Return the distance between two members in the geospatial index"
+                          :parameters   {:query {:id1 string? :id2 string? :unit string?}}
+                          :responses    {200 {:body {:distance string?}}}
                           :interceptors [(i/with-component <redis>)]
-                          :handler    handler/distance}}]
-       ["/geopos" {:get {:summary    "Return the positions (longitude,latitude) of all the specified members of the geospatial index represented by the sorted set at key."
-                         :parameters {:query {:id string?}}
-                         ;;:responses  {200 {:body {:distance string?}}}
+                          :handler      handler/geodistance}}]
+       ["/geopos" {:get {:summary      "Return the positions (longitude,latitude) of all the specified members of the geospatial index represented by the sorted set at key."
+                         :parameters   {:query {:id string?}}
+                         :responses  {200 {:body {:position string?}}}
                          :interceptors [(i/with-component <redis>)]
-                         :handler    handler/distance}}]
+                         :handler      handler/geopos}}]
+       ["/georadius" {:get {:summary      "Return the members of a sorted set populated with geospatial information using GEOADD, which are within the borders of the area specified with the center location and the maximum distance from the center (the radius)."
+                            :parameters   {:query {:lat ::spec/lat :lng ::spec/lng :unit string?}}
+                            :responses  {200 {:body {:objects vector?}}}
+                            :interceptors [(i/with-component <redis>)]
+                            :handler      handler/geopos}}]
        ["/swagger.json"
         {:get {:no-doc true
                :swagger {:info {:title "tracking API"

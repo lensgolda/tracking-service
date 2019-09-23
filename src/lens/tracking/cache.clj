@@ -4,7 +4,7 @@
 (defprotocol Redis
   (ping [this])
   (geoadd [this key lat lng member])
-  (geodist [this key member1 member2])
+  (geodist [this key member1 member2 unit])
   (geopos [this key member])
   (georadius [this key longitude latitude radius unit])
   (zrem [this key member]))

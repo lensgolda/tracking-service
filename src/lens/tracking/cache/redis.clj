@@ -27,12 +27,9 @@
    - km for kilometers.
    - mi for miles.
    - ft for feet."
-  ([this key member1 member2]
-   (wcar this
-     (carmine/geodist key member1 member2)))
-  ([this key member1 member2 unit]
-   (wcar this
-     (carmine/geodist key member1 member2 unit))))
+  [this key member1 member2 unit]
+  (let [unit* (or unit (get-in this [:config :redis :unit] "m"))]
+    (carmine/geodist key member1 member2 unit*)))
 
 (defn- -geopos
   "Return the positions (longitude,latitude) of all the specified members
@@ -88,7 +85,7 @@
     (log/info "<<<<<< Stopping Redis")
     (when-let [conn-pool (get-in this [:conn :pool]
                            (new Exception "No such config field or empty"))]
-      (.close conn-pool))
+      (.close ^IConnectionPool conn-pool))
     (assoc this :conn nil))
 
   cache/Redis
@@ -96,8 +93,8 @@
     (-ping this))
   (geoadd [this key lat lng member]
     (-geoadd this key lat lng member))
-  (geodist [this key member1 member2]
-    (-geodist this key member1 member2))
+  (geodist [this key member1 member2 unit]
+    (-geodist this key member1 member2 unit))
   (geopos [this key member]
     (-geopos this key member))
   (georadius [this key longitude latitude radius unit]
