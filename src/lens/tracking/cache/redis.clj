@@ -12,6 +12,8 @@
     (carmine/ping)))
 
 (defn- -geoadd
+  "Adds the specified geospatial items (latitude, longitude, name) to the specified key.
+  Time complexity: O(log(N)) for each item added, where N is the number of elements in the sorted set."
   [this key lat lng member]
   (wcar this
     (carmine/geoadd key lng lat member)))
@@ -19,6 +21,7 @@
 (defn- -geodist
   "Return the distance between two members in the
   geospatial index represented by the sorted set.
+  Time complexity: O(log(N))
   The unit must be one of the following, and defaults to meters:
    - m for meters.
    - km for kilometers.
@@ -32,6 +35,10 @@
      (carmine/geodist key member1 member2 unit))))
 
 (defn -geopos
+  "Return the positions (longitude,latitude) of all the specified members
+  of the geospatial index represented by the sorted set at key.
+  Time complexity: O(log(N)) for each member requested, where N is the number
+  of elements in the sorted set."
   [this key member]
   (wcar this
     (carmine/geopos key member)))
