@@ -25,22 +25,28 @@
                        :handler (fn [_]
                                   {:status 200})}}]
        ["/geoadd" {:post {:summary      "Adds the specified geospatial items (latitude, longitude, name)"
-                          :parameters   {:body {:position ::spec/position :id ::spec/id}}
-                          :responses    {200 {:body {:total int? :id string?}}}
+                          :parameters   {:body {:id ::spec/id
+                                                :position ::spec/position}}
+                          :responses    {200 {:body {:total int? :id ::spec/id}}}
                           :interceptors [(i/with-component <redis>)]
                           :handler      handler/geoadd}}]
        ["/geodist" {:get {:summary      "Return the distance between two members in the geospatial index"
-                          :parameters   {:query {:id1 string? :id2 string? :unit ::spec/unit}}
+                          :parameters   {:query {:id1 ::spec/id
+                                                 :id2 ::spec/id
+                                                 :unit ::spec/unit}}
                           :responses    {200 {:body {:distance string?}}}
                           :interceptors [(i/with-component <redis>)]
                           :handler      handler/geodistance}}]
        ["/geopos" {:get {:summary      "Return the positions (longitude,latitude) of all the specified members of the geospatial index represented by the sorted set at key."
-                         :parameters   {:query {:id string?}}
+                         :parameters   {:query {:id ::spec/id}}
                          :responses    {200 {:body {:position (s/coll-of string? :count 2 :kind vector?)}}}
                          :interceptors [(i/with-component <redis>)]
                          :handler      handler/geopos}}]
        ["/georadius" {:get {:summary      "Return the members of a sorted set populated with geospatial information using GEOADD, which are within the borders of the area specified with the center location and the maximum distance from the center (the radius)."
-                            :parameters   {:query {:lat ::spec/lat :lng ::spec/lng :radius string? :unit ::spec/unit}}
+                            :parameters   {:query {:lat ::spec/lat
+                                                   :lng ::spec/lng
+                                                   :radius string?
+                                                   :unit ::spec/unit}}
                             :responses    {200 {:body {:members (s/coll-of map? :kind vector?)}}}
                             :interceptors [(i/with-component <redis>)]
                             :handler      handler/georadius}}]
